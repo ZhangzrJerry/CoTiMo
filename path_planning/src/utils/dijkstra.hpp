@@ -71,10 +71,8 @@ bool dijkstra(const std::vector<std::vector<bool>>& grid_map,
       current = parent[current(0)][current(1)];
     }
     std::reverse(path.begin(), path.end());
-    ROS_INFO("path found, length: %d", path.size());
     return true;
   }
-  ROS_WARN("path not found");
   return false;
 }
 }  // namespace dijkstra

@@ -152,10 +152,10 @@ class Smooth {
     direction = var_new - var;
     ROS_INFO("iter: %d/%d, loss: %f, grad: %f", iter, MAX_ITER, loss(var_new),
              grad_new.norm());
-    if (loss(var_new) > n * 3e-1 + loss(var)) {
-      ROS_ERROR("optimization not converged");
-      return true;
-    }
+    // if (loss(var_new) > n * 3e-1 + loss(var)) {
+    //   ROS_ERROR("optimization not converged");
+    //   return true;
+    // }
     if (iter >= MAX_ITER) {
       ROS_WARN("optimization not converged");
       return true;

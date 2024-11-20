@@ -88,13 +88,16 @@ int main(int argc, char** argv) {
         map->getGridMap(grid_map);
         std::vector<Eigen::Vector2i> path;
         // if (!dijkstra::dijkstra(grid_map, start, goal, path)) {
+        //   ROS_WARN("no path found");
         //   mode = Mode::WAIT;
         //   break;
         // }
         if (!astar::astar(grid_map, start, goal, path)) {
+          ROS_WARN("no path found");
           mode = Mode::WAIT;
           break;
         }
+        ROS_INFO("path found, length: %d", path.size());
 
         // visualize path
         visualization_msgs::Marker path_msg;
