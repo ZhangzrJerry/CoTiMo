@@ -1,0 +1,7 @@
+<launch>
+
+    <node pkg="path_planning" type="path_node" name="path_node" output="screen" />
+
+    <node pkg="rviz" type="rviz" name="rviz" args="-d /ws/src/rviz/default.rviz" /> 
+
+</launch>

@@ -1,0 +1,17 @@
+services:
+  lab:
+    image: base
+    build:
+      context: docker/lab
+      dockerfile: lab.dockerfile
+    restart: no
+    privileged: true
+    ports:
+      - "8811:8811"
+
+    environment:
+      - DISPLAY=:10.0
+      - PORT=8811
+    volumes:
+      - ${SRC_PATH}:/ws/src
+    tty: true
