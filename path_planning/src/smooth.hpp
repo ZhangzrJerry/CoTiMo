@@ -93,10 +93,6 @@ class Smooth {
 
   bool step(std::vector<Eigen::Vector2d> &points, Eigen::VectorXd &direction) {
     ++iter;
-    if (points.size() < 3) {
-      ROS_WARN("too few control points");
-      return true;
-    }
     Eigen::VectorXd var(2 * n);
     for (int i = 0; i < n; i++) {
       var(i) = points[i](0) * PATH_CELL_SIZE - MAP_SIZE / 2;
@@ -130,6 +126,12 @@ class Smooth {
 
     Eigen::VectorXd d = -grad;
     for (int i = 0; i < n; i++) {
+      // if (rand() % DROPOUT != 0) {
+      //   d(i) = 1 / (1 + exp(-d(i))) - 0.5;
+      // }
+      // if (rand() % DROPOUT != 0) {
+      //   d(i + n) = 1 / (1 + exp(-d(i + n))) - 0.5;
+      // }
       d(i) = 1 / (1 + exp(-d(i))) - 0.5;
       d(i + n) = 1 / (1 + exp(-d(i + n))) - 0.5;
     }
@@ -148,40 +150,12 @@ class Smooth {
     Eigen::VectorXd var_new = var + d;
     Eigen::VectorXd grad_new = gradient(var_new);
     direction = var_new - var;
-    if (loss(var_new) > loss(var)) {
-      ROS_ERROR("optimization not converged");
-      return true;
-      std::vector<Eigen::Vector2d> head, tail;
-      int offset = rand() % n;
-      if (offset == 0) {
-        ++offset;
-      }
-      if (offset == n - 1) {
-        --offset;
-      }
-      Eigen::VectorXd directionHead = Eigen::VectorXd::Zero(1 + offset);
-      Eigen::VectorXd directionTail = Eigen::VectorXd::Zero(n - offset);
-      for (int i = 0; i <= offset; i++) {
-        head.push_back(points[i]);
-      }
-      for (int i = offset; i < n; i++) {
-        tail.push_back(points[i]);
-      }
-      ROS_INFO("split at %d", offset);
-      --iter;
-      step(head, directionHead);
-      --iter;
-      step(tail, directionTail);
-      for (int i = 0; i <= offset; i++) {
-        points[i] = head[i];
-      }
-      for (int i = offset; i < n; i++) {
-        points[i] = tail[i - offset];
-      }
-      // return true;
-    }
     ROS_INFO("iter: %d/%d, loss: %f, grad: %f", iter, MAX_ITER, loss(var_new),
              grad_new.norm());
+    if (loss(var_new) > n * 3e-1 + loss(var)) {
+      ROS_ERROR("optimization not converged");
+      return true;
+    }
     if (iter >= MAX_ITER) {
       ROS_WARN("optimization not converged");
       return true;
