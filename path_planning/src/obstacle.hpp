@@ -34,8 +34,8 @@ class Obstacle {
       double distance = 0x3f3f3f3f;
       for (int i = 0; i < A.rows(); ++i) {
         // 1e-16 for numerical stability
-        distance = std::min(distance, std::abs(A.row(i) * x - b(i)) /
-                                          (A.row(i).norm() + 1e-16));
+        distance = std::min(distance,
+                            (b(i) - A.row(i) * x) / (A.row(i).norm() + 1e-16));
       }
       return distance;
     }

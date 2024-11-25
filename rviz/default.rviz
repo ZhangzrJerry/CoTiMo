@@ -3,10 +3,7 @@ Panels:
     Help Height: 78
     Name: Displays
     Property Tree Widget:
-      Expanded:
-        - /Status1
-        - /Path1
-        - /Gradient1
+      Expanded: ~
       Splitter Ratio: 0.5235294103622437
     Tree Height: 451
   - Class: rviz/Selection
@@ -76,10 +73,26 @@ Visualization Manager:
         {}
       Queue Size: 100
       Value: true
+    - Class: rviz/Marker
+      Enabled: false
+      Marker Topic: /path/points
+      Name: Points
+      Namespaces:
+        {}
+      Queue Size: 100
+      Value: false
     - Class: rviz/MarkerArray
-      Enabled: true
+      Enabled: false
       Marker Topic: /path/gradient
       Name: Gradient
+      Namespaces:
+        {}
+      Queue Size: 100
+      Value: false
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /path/sim
+      Name: Sphere
       Namespaces:
         {}
       Queue Size: 100

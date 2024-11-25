@@ -7,12 +7,23 @@
 #define RENDER_SIZE 0.1
 
 #define INTERVAL 3
-#define LEARNING_RATE1 1.8e-1
-#define LEARNING_RATE2 1.8e-1
-#define LEARNING_RATE3 1.2e-1
-#define LEARNING_RATE4 4e-2
-#define LEARNING_RATE5 1e-2
-#define MAX_ITER 50
+#define LEARNING_RATE1 0.20
+#define LEARNING_RATE2 0.12
+#define LEARNING_RATE3 0.05
+#define LEARNING_RATE4 0.02
+#define LEARNING_RATE5 0.01
+#define MAX_ITER 40
 // #define DROPOUT 3
+
+#define DT .02
+#define VSTART 0.
+#define VEND 0.
+#define VMAX 6.
+#define AMAX 3.
+#define GAMMA .5
+#define BETA 1e3
+#define TOPP_ITER 250
+
+#define NMPC 8
 
 #endif  // CONFIG_H

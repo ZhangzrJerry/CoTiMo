@@ -23,11 +23,14 @@ include_directories(
 add_executable(path_node
 src/utils/sdqp.hpp
 src/utils/astar.hpp
+src/utils/lbfgs.hpp
 src/utils/dijkstra.hpp
 src/utils/spline.hpp
 src/obstacle.hpp 
 src/map.hpp
 src/smooth.hpp
+src/topp.hpp
+src/mpc.hpp
 src/path_node.cpp
 )
 
@@ -36,6 +39,10 @@ src/utils/sdqp.hpp
 src/obstacle.hpp
 src/map.hpp
 src/test.cpp
+)
+
+catkin_install_python(PROGRAMS scripts/plot_node.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
 target_link_libraries(path_node ${catkin_LIBRARIES})

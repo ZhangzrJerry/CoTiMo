@@ -15,16 +15,16 @@ class Smooth {
   // Eigen::MatrixXd B;
   int n, iter;
 
-  int check(const Eigen::VectorXd &var) {
-    int cnt = 0;
-    for (int i = 0; i < n; ++i) {
-      if (Map::getInstance()->distance(Eigen::Vector2d(var(i), var(i + n))) <
-          -0.5) {
-        cnt++;
-      }
-    }
-    return cnt;
-  }
+  // int check(const Eigen::VectorXd &var) {
+  //   int cnt = 0;
+  //   for (int i = 0; i < n; ++i) {
+  //     if (Map::getInstance()->distance(Eigen::Vector2d(var(i), var(i + n))) <
+  //         -0.5) {
+  //       cnt++;
+  //     }
+  //   }
+  //   return cnt;
+  // }
 
   // double energy(const Eigen::VectorXd &x, const Eigen::VectorXd &y) {
   //   double res = 0;
@@ -54,7 +54,7 @@ class Smooth {
       // ROS_INFO("point: %f, %f", point(0), point(1));
       // ROS_INFO("inside: %d", map->occupied(point));
       // ROS_INFO("distance: %f", map->distance(point));
-      res += exp(5 * map->distance(point));
+      res += exp(4 * map->distance(point));
     }
     return res;
   }
@@ -149,9 +149,9 @@ class Smooth {
     }
     Eigen::VectorXd var_new = var + d;
     Eigen::VectorXd grad_new = gradient(var_new);
-    direction = var_new - var;
-    ROS_INFO("iter: %d/%d, loss: %f, grad: %f", iter, MAX_ITER, loss(var_new),
-             grad_new.norm());
+    direction = (var_new - var) * 33;
+    // ROS_INFO("iter: %d/%d, loss: %f, grad: %f", iter, MAX_ITER,
+    // loss(var_new), grad_new.norm());
     // if (loss(var_new) > n * 3e-1 + loss(var)) {
     //   ROS_ERROR("optimization not converged");
     //   return true;

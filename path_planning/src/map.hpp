@@ -47,9 +47,14 @@ class Map {
     obstacles.push_back(Obstacle<2>(5, A1, b1));
 
     /**
-    return map_msg;
-     * -1 * x + 1 * y <= 9.5
-     * -0 * x + 1 * y <= 10
+     * 1 * x + 1 * y <=  12.5
+     * 1 * x - 1 * y <=  4
+     * 0 * x - 1 * y <=  -2.5
+     * -1 * x + 0 * y <= -4
+     * -1 * x + 1 * y <= -3.5
+     * 0 * x + 1 * y <=  2
+     * 1 * x + 0 * y <=  9.5
+     * 1 * x + 1 * y <=  10
      */
     Eigen::Matrix<double, 8, 2> A2;
     Eigen::Matrix<double, 8, 1> b2;
@@ -189,7 +194,7 @@ class Map {
     return instance;
   }
 
-  inline bool occupied(Eigen::Vector2d x) {
+  inline bool occupied(const Eigen::Vector2d& x) {
     for (auto& obstacle : obstacles) {
       if (obstacle.inside(x)) {
         return true;
@@ -297,12 +302,65 @@ class Map {
     return;
   }
 
+  inline void getPoints(visualization_msgs::Marker& points_msg,
+                        const std::vector<Eigen::Vector2d>& points) {
+    points_msg.header.frame_id = "map";
+    points_msg.ns = "points";
+    points_msg.id = 0;
+    points_msg.type = visualization_msgs::Marker::SPHERE_LIST;
+    points_msg.action = visualization_msgs::Marker::ADD;
+    points_msg.scale.x = RENDER_SIZE * 2;
+    points_msg.scale.y = RENDER_SIZE * 2;
+    points_msg.scale.z = RENDER_SIZE * 2;
+    points_msg.pose.orientation.w = 1.0;
+    points_msg.color.a = .9;
+    points_msg.color.r = 1.;
+    points_msg.color.g = 1.;
+    points_msg.color.b = 0;
+
+    geometry_msgs::Point p;
+    for (int i = 0; i < points.size(); ++i) {
+      p.x = (points[i](0) + .5) * RENDER_SIZE;
+      p.y = (points[i](1) + .5) * RENDER_SIZE;
+      p.z = .01;
+      points_msg.points.push_back(p);
+    }
+    return;
+  }
+
+  inline void getPoint(visualization_msgs::Marker& point_msg,
+                       const Eigen::Vector2d& point) {
+    point_msg.header.frame_id = "map";
+    point_msg.ns = "point";
+    point_msg.id = 0;
+    point_msg.type = visualization_msgs::Marker::SPHERE;
+    point_msg.scale.x = RENDER_SIZE * 4;
+    point_msg.scale.y = RENDER_SIZE * 4;
+    point_msg.scale.z = RENDER_SIZE * 4;
+    point_msg.pose.orientation.w = 1.0;
+    point_msg.color.a = .9;
+    point_msg.color.r = 1.;
+    point_msg.color.g = 1.;
+    point_msg.color.b = 0;
+
+    geometry_msgs::Point p;
+    p.x = (point(0) + .5) * RENDER_SIZE;
+    p.y = (point(1) + .5) * RENDER_SIZE;
+    p.z = .05;
+    point_msg.pose.position = p;
+    return;
+  }
+
   inline void getGradient(visualization_msgs::MarkerArray& grad_msg,
                           const std::vector<Eigen::Vector2d>& points,
                           const Eigen::VectorXd& grad) {
+    for (int i = 0; i < grad_msg.markers.size(); ++i) {
+      grad_msg.markers[i].action = visualization_msgs::Marker::DELETE;
+      grad_msg.markers[i].color.a = 0;
+    }
     grad_msg.markers.clear();
     for (int i = 0; i < points.size(); ++i) {
-      if (grad(i) == 0 && grad(i + points.size()) == 0) {
+      if (Eigen::Vector2d(grad(i), grad(i + points.size())).norm() < 1e-3) {
         continue;
       }
       visualization_msgs::Marker marker;
