@@ -8,7 +8,7 @@
 
 ### Reference
 
-| | |
+| Type | Source |
 |-|-|
 |Blog|https://zhangzrjerry.github.io/blog/2024/11/24/cotomo/|
 |LBFGS|https://github.com/ZJU-FAST-Lab/LBFGS-Lite/|
