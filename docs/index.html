@@ -133,7 +133,7 @@
 
                 <section>
                     <h3>Distance to Obstacle</h3>
-                    <p class="small-text">Distance to obstacle can be solved by LDQP</p>
+                    <p class="small-text">Distance to obstacle can be solved by Quadratic Programming</p>
                     <div class="math">
                         \[
                         \begin{aligned}
@@ -150,8 +150,13 @@
 
                 <section>
                     <h3>Keep away from Obstacles</h3>
-                    <img src="assets/cotimo.png" width="400" alt="Keep away from obstacles">
-                    <p class="small-text">Maximize the distance to obstacles</p>
+                    <img src="assets/cotimo.png" width="350" alt="Keep away from obstacles">
+                    <p class="small-text">Equivalent to maximize the distance to obstacles</p>
+                    <p class="math small-text">
+                        \[
+                        \min_{x}\sum\exp(-d(x_i)) \quad \text{s.t.} \ d(x_i) = \min(||x_i-p_j||_2),\forall j
+                        \]
+                    </p>
                 </section>
             </section>
 
@@ -186,7 +191,7 @@
                 </section>
 
                 <section>
-                    <h3>Motor Model</h3>
+                    <h3>DC Motor Model</h3>
                     <div class="math small-text">
                         Elevator model:
                         \[
@@ -203,19 +208,20 @@
 
                 <section>
                     <h3>Discrete Kinematics</h3>
-                    <p class="small-text">Based on the motor model,<br>
+                    <p class="small-text">Based on the DC motor model,<br>
                         voltage and current constraints are represented by:
                     </p>
                     <div style="display: flex; justify-content: space-around;">
-                        <div>
+                        <div
+                            style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
                             <img src="assets/discrete-as.png" width="400" alt="Discrete accelerations">
-                            <p class="small-text">Discrete accelerations</p>
                         </div>
-                        <div>
+                        <div
+                            style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
                             <img src="assets/discrete-bs.png" width="400" alt="Discrete velocities">
-                            <p class="small-text">Discrete velocities</p>
                         </div>
                     </div>
+                    <p class="small-text">discrete accelerations and discrete velocities</p>
                 </section>
 
                 <section>
