@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoTiMo Planner</title>
+
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/white.min.css">
+
+    <!-- Custom CSS -->
+    <style>
+        .title-slide {
+            background-color: #0066b3;
+            /* FRC blue */
+        }
+
+        .title-slide h1 {
+            color: white;
+            margin-bottom: 0.5em;
+        }
+
+        .title-slide h3 {
+            color: #ffd100;
+        }
+
+        b {
+            color: #ffd100;
+            font-weight: bold;
+        }
+
+        .logo {
+            border: none !important;
+            background: none !important;
+            box-shadow: none !important;
+            height: 3em;
+            vertical-align: middle;
+        }
+
+        .small-text {
+            font-size: 0.7em !important;
+        }
+
+        .math {
+            font-family: "Times New Roman", serif;
+            font-size: 0.9em !important;
+        }
+
+        .author {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .author a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .author-black a {
+            color: rgb(35, 138, 255);
+        }
+
+        @keyframes shake {
+            0% {
+                transform: translateY(+50px);
+            }
+
+            100% {
+                transform: translateY(+0px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <!-- Title Slide -->
+            <section class="title-slide" data-background-color="#0066b3">
+                <h1>CoTiMo Planner</h1>
+                <ul>
+                    <li><b>Co</b>llision-free Smooth Path Generation</li>
+                    <li><b>Ti</b>me Optimal Path Parameterization</li>
+                    <li><b>Mo</b>del Predictive Control</li>
+                </ul>
+                <p class="author"><a href="https://zhangzrjerry.github.io">@ZhangzrJerry</a></p>
+            </section>
+
+            <!-- Path Planning -->
+            <section>
+                <section>
+                    <h2>Path Planning</h2>
+                    <img src="assets/astar-c.png" width="600" alt="A* Path Planning">
+                    <p class="small-text"
+                        style="text-align:center; animation: shake 2s; animation-iteration-count: infinite;">
+                        Swipe down to see more
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Heuristic Path</h3>
+                    <div style="display: flex; justify-content: space-around;">
+                        <div>
+                            <img src="assets/astar-b.png" width="400" alt="Original A* Path">
+                            <p class="small-text">Original A* path</p>
+                        </div>
+                        <div>
+                            <img src="assets/astar-a.png" width="400" alt="Improved A* Path">
+                            <p class="small-text">Improved A* path</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Obstacle Representation</h3>
+                    <p class="small-text">Polytope represented by linear inequality:</p>
+                    <div class="math">
+                        \[
+                        \begin{aligned}
+                        Ax \le b
+                        \end{aligned}
+                        \]
+                    </div>
+                    <p class="small-text">With a finite set of polytopes,<br>
+                        we can represent the feasible environment.</p>
+                </section>
+
+                <section>
+                    <h3>Distance to Obstacle</h3>
+                    <p class="small-text">Distance to obstacle can be solved by LDQP</p>
+                    <div class="math">
+                        \[
+                        \begin{aligned}
+                        \min_{x} & ||x-p||^2 \\
+                        \text{s.t.} & Ax\le b
+                        \end{aligned}
+                        \]
+                    </div>
+                    <p class="small-text">
+                        \(x\) is the point on the obstacle boundary, <br>
+                        \(p\) is the point to be evaluated.</p>
+                    <img src="assets/tandfonline.gif" width="450" alt="Distance to Obstacle">
+                </section>
+
+                <section>
+                    <h3>Keep away from Obstacles</h3>
+                    <img src="assets/cotimo.png" width="400" alt="Keep away from obstacles">
+                    <p class="small-text">Maximize the distance to obstacles</p>
+                </section>
+            </section>
+
+            <!-- Trajectory Planning -->
+            <section>
+                <section>
+                    <h2>Trajectory Planning</h2>
+                    <img src="assets/param.png" style="border-radius: 10px;" width="600"
+                        alt="Trajectory Parameterization">
+                    <p class="small-text"
+                        style="text-align:center; animation: shake 2s; animation-iteration-count: infinite;">
+                        Swipe down to see more
+                    </p>
+                </section>
+
+                <section>
+                    <h3>Time Optimal Equation</h3>
+                    <div class="math small-text">
+                        \[
+                        T=\int_0^T1{\rm d}t = \int_0^L\frac1{\frac{{\rm d}s}{{\rm d}t}}{\rm d}s
+                        \]
+                    </div>
+                    <p>Constraints on voltage and current:</p>
+                    <div class="math small-text">
+                        \[
+                        \begin{aligned}
+                        -V_{x,\max} & \le V_x \le V_{x,\max} \\
+                        -I_{x,\max} & \le I_x \le I_{x,\max} \\
+                        \end{aligned}
+                        \]
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Motor Model</h3>
+                    <div class="math small-text">
+                        Elevator model:
+                        \[
+                        V_E = K_g + K_S \cdot \frac{\dot d}{|\dot d|} + \frac{K_v}{I_e} \cdot \dot d + \frac{K_a}{I_e}
+                        \cdot \ddot d
+                        \]
+                        Arm model:
+                        \[
+                        V_A = K_g \cdot \cos(\theta) + K_S \cdot \frac{\dot{\theta}}{|\dot{\theta}|} +
+                        \frac{K_v}{I_a} \cdot \dot{\theta} + \frac{K_a}{I_a} \cdot \ddot{\theta}
+                        \]
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Discrete Kinematics</h3>
+                    <p class="small-text">Based on the motor model,<br>
+                        voltage and current constraints are represented by:
+                    </p>
+                    <div style="display: flex; justify-content: space-around;">
+                        <div>
+                            <img src="assets/discrete-as.png" width="400" alt="Discrete accelerations">
+                            <p class="small-text">Discrete accelerations</p>
+                        </div>
+                        <div>
+                            <img src="assets/discrete-bs.png" width="400" alt="Discrete velocities">
+                            <p class="small-text">Discrete velocities</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Second-Order Cone Programming</h3>
+                    <div class="math small-text">
+                        Rewriting the time optimal trajectory planning equations, <br>
+                        we can formulate it as a second-order cone programming problem:
+                        \[
+                        \begin{aligned}
+                        \min_x\ & c^Tx \\
+                        \text {s.t.}\
+                        & A_ix+b_i\in \mathcal K_i \\
+                        & x^TJx-r^Tx = 0 \\
+                        & Gx=h \\
+                        & Px\le q \\
+                        \end{aligned}
+                        \]
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Augmented Lagrangian Method</h3>
+                    <div class="math small-text">
+                        \[
+                        \begin{aligned}
+                        & {\mathcal L}_\rho(x,\mu,\nu,\lambda,\eta) \\
+                        =& \frac\rho2\sum_{i=1}^m ||P_{\mathcal K_i}(\frac{\mu_i}\rho-A_ix-b_i)||^2 + \\
+                        & \frac\rho2\sum_{j=1}^q ||x^TJ_jx-r_j^Tx+\frac{\nu_j}\rho||^2 + \\
+                        & \frac\rho2||\max[Px-q+\frac\eta\rho,0]||^2 + \\
+                        & \frac\rho2||Gx-h+\frac\lambda\rho||^2 + c^Tx
+                        \end{aligned}
+                        \]
+                    </div>
+                </section>
+
+                <section>
+                    <h3>L-BFGS Optimization</h3>
+                    <div class="math small-text">
+                        \[
+                        \begin{aligned}
+                        x &\leftarrow \arg\min_x {\mathcal L}_\rho(x,\mu,\nu,\lambda,\eta) \\
+                        \mu_i &\leftarrow P_{\mathcal{K}_i}[\mu_i-\rho(A_ix+b_i)] \\
+                        \nu_j &\leftarrow \nu_j + \rho[x^TJ_jx-r_j^Tx] \\
+                        \lambda &\leftarrow \lambda + \rho[Gx-h] \\
+                        \eta &\leftarrow \rho[\max[\eta +\rho(Px-q),0]] \\
+                        \rho &\leftarrow \min[(1+\gamma)\rho, \beta]
+                        \end{aligned}
+                        \]
+                    </div>
+                </section>
+            </section>
+
+            <!-- Results -->
+            <section>
+                <h2>Implementation Results</h2>
+                <img src="assets/result.png" width="800" alt="Desktop Application Screenshot">
+                <p class="small-text">Desktop application showing the planner in action</p>
+            </section>
+
+            <!-- Conclusion -->
+            <section>
+                <h2>Conclusion</h2>
+                <ul>
+                    <li>Developed collision-free path planning with continuous potential fields</li>
+                    <li>Implemented time-optimal trajectory planning with physical constraints</li>
+                    <li>Solved optimization problem with Augmented Lagrangian + L-BFGS</li>
+                </ul>
+            </section>
+
+            <!-- Thank You -->
+            <section>
+                <h2>Thank You</h2>
+                <p class="author author-black"><a href="https://zhangzrjerry.github.io">@ZhangzrJerry</a></p>
+            </section>
+        </div>
+    </div>
+
+    <!-- Reveal.js Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/math/math.min.js"></script>
+    <script>
+        Reveal.initialize({
+            plugins: [RevealMath.KaTeX],
+            hash: true,
+            transition: 'convex',
+            slideNumber: 'c/t',
+            pdfSeparateFragments: false
+        });
+    </script>
+</body>
+
+</html>
