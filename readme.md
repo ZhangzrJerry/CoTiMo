@@ -1,3 +1,5 @@
+
+
 # CoTiMo Planner
 
 ### Collision-Free Smooth Path Generation + Time Optimal Path Parameterization + Model Predictive Control
@@ -5,6 +7,11 @@
 ![](./assets/result.gif)
 
 ![](./assets/ros.svg) ![](./assets/cpp.svg) ![](./assets/python.svg)
+
+## Getting Started
+
+1. Start the container environment: `docker compose up -d`
+2. Run the demo script: `./quick_test.sh`
 
 ## Reference
 
